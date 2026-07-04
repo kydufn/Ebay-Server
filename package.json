@@ -1,0 +1,6 @@
+{
+  "name": "reseller-center-ebay-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kleiner Server, der eBay-Artikeldaten (Kategorie, Titel, Zustand) sicher fürs Reseller Center abruft."
+}
