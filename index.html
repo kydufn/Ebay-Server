@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reseller Center</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E1318">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Reseller Center">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+
+:root{
+  --bg:#0E1318; --bg2:#0A0E12; --card:#161C22; --card2:#1B222A; --ink:#EAEEF2; --muted:#7C8896; --muted2:#A7B0BB;
+  --line:#252D36; --line2:#323C46; --accent:#E8A33D; --accent-bg:#2A2115; --accent-ink:#0E1318;
+  --good:#4FAE7B; --good-bg:#132420; --bad:#E8664F; --bad-bg:#2A1815; --info:#6B8CAE; --info-bg:#151F2A;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent}
+.mono{font-family:'JetBrains Mono',monospace}
+input,select,textarea,button{font-family:inherit;font-size:15px}
+input,select,textarea{width:100%;background:var(--bg2);border:1.5px solid var(--line);color:var(--ink);border-radius:5px;padding:10px 11px;outline:none}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:block;margin:0 0 5px}
+button{border:1.5px solid transparent;border-radius:5px;padding:10px 14px;font-weight:600;cursor:pointer;font-size:13.5px;transition:background .12s,border-color .12s}
+.btn-primary{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn-primary:hover{background:#f2b455}
+.btn-ghost{background:transparent;color:var(--muted2);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--bad-bg);color:var(--bad);border-color:#4a2620}
+.btn-sm{padding:6px 10px;font-size:12px}
+header{position:sticky;top:0;z-index:10;background:rgba(14,19,24,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px}
+.header-inner{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:1480px;margin:0 auto}
+.brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;display:flex;align-items:center;gap:9px;letter-spacing:.01em}
+.brand .beacon{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.sub{color:var(--muted);font-size:11px;margin-top:3px}
+.save-indicator{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 6px var(--good)}
+.dot.saving{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.dot.error{background:var(--bad);box-shadow:0 0 6px var(--bad)}
+
+.layout{display:flex;max-width:1480px;margin:0 auto;min-height:calc(100vh - 200px)}
+nav.side{width:188px;flex-shrink:0;padding:18px 10px;display:none}
+.navbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:1.5px solid transparent;padding:9px 11px;border-radius:5px;cursor:pointer;font-weight:600;color:var(--muted);margin-bottom:3px;font-size:13px}
+.navbtn svg{width:16px;height:16px;flex-shrink:0}
+.navbtn:hover{color:var(--ink);background:var(--card)}
+.navbtn.active{background:var(--card2);color:var(--accent);border-color:var(--line2)}
+main{flex:1;padding:18px;padding-bottom:90px;min-width:0}
+
+nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--line);display:flex;overflow-x:auto;z-index:20}
+nav.bottom .navbtn{flex-direction:column;font-size:10px;gap:3px;border-radius:0;flex:1;min-width:64px;text-align:center;padding:8px 4px;margin-bottom:0}
+nav.bottom .navbtn.active{background:transparent;color:var(--accent);border-bottom:2px solid var(--accent)}
+nav.bottom svg{width:18px;height:18px}
+
+@media(min-width:820px){
+  nav.side{display:block}
+  nav.bottom{display:none}
+  main{padding-bottom:18px}
+}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:14px}
+.card-solid{background:var(--card2);border:1px solid var(--line2);border-radius:8px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 12px;font-size:15px;font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--ink)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.grid{display:grid;gap:10px}
+.kpis{grid-template-columns:repeat(2,1fr)}
+@media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{position:relative;overflow:hidden}
+.kpi .label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.05em}
+.kpi .value{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;margin-top:6px}
+.good{color:var(--good)} .bad{color:var(--bad)} .warn-txt{color:var(--accent)}
+.row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.col-12{grid-column:span 12} .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3} .col-2{grid-column:span 2}
+@media(max-width:560px){.row .col-6,.row .col-4,.row .col-3,.row .col-2{grid-column:span 6}}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.05em}
+tr:hover td{background:rgba(255,255,255,.02)}
+.table-wrap{overflow-x:auto}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border:1px solid}
+.pill.info{color:var(--info);background:var(--info-bg);border-color:#2c3f52}
+.pill.warn{color:var(--accent);background:var(--accent-bg);border-color:#4a3a1e}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.bigprofit{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;margin:6px 0}
+.empty{text-align:center;padding:36px 16px;color:var(--muted);border:1px dashed var(--line2);border-radius:8px}
+.hidden{display:none!important}
+.note-banner{background:var(--good-bg);border:1px solid #245c43;color:var(--good);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:12px;font-weight:600}
+.err-banner{background:var(--bad-bg);border:1px solid #6b2f26;color:var(--bad);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:12px;font-weight:600}
+code{background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="brand"><span class="beacon"></span>RESELLER CENTER</div>
+      <div class="sub">Bestand · Gewinn · Versand · Fixkosten — automatisch synchron</div>
+    </div>
+    <div class="actions">
+      <span class="save-indicator" id="saveIndicator"><span class="dot" id="saveDot"></span><span id="saveText">Gespeichert</span></span>
+      <span class="pill info" id="storageModePill" style="display:none"></span>
+      <button class="btn-ghost btn-sm" onclick="exportBackup()">Backup</button>
+      <label class="btn-ghost btn-sm" style="margin:0;cursor:pointer">Import<input type="file" accept="application/json" class="hidden" onchange="importBackup(event)"></label>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="side" id="navSide"></nav>
+  <main id="app"><div class="empty">Lädt Daten…</div></main>
+</div>
+<nav class="bottom" id="navBottom"></nav>
+
+<script>
+const ICONS = {
+  dashboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>',
+  products:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+  calculator:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="11" x2="8" y2="11"/><line x1="12" y1="11" x2="12" y2="11"/><line x1="16" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="8" y2="15"/><line x1="12" y1="15" x2="12" y2="15"/><line x1="16" y1="15" x2="16" y2="19"/><line x1="8" y1="19" x2="12" y2="19"/></svg>',
+  sales:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2l1.5 5h9L18 2"/><path d="M3 7h18l-1.5 12a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2L3 7z"/></svg>',
+  shipping:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="15" height="12" rx="1"/><path d="M16 10h4l3 3v5h-7z"/><circle cx="6" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>',
+  fixed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+  expenses:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+};
+const TABS = [
+  ['dashboard','Dashboard'],['products','Produkte'],['sales','Verkäufe'],['calculator','Rechner'],
+  ['shipping','Versand'],['fixed','Fixkosten'],['expenses','Ausgaben'],['settings','Einstellungen'],
+];
+const STORAGE_KEY = 'reseller-center-db';
+let page = 'dashboard';
+let db = null;
+let saveTimer = null;
+
+function defaultDb(){
+  return {
+    products: [], sales: [], expenses: [],
+    shipping: [
+      {id:uid(),name:'DHL Kleinpaket',maxKg:1,price:4.19},
+      {id:uid(),name:'DHL Paket bis 2 kg',maxKg:2,price:5.49},
+      {id:uid(),name:'DHL Paket bis 5 kg',maxKg:5,price:6.99},
+      {id:uid(),name:'DHL Paket bis 10 kg',maxKg:10,price:10.49},
+      {id:uid(),name:'DHL Paket bis 20 kg',maxKg:20,price:18.99},
+      {id:uid(),name:'DPD Durchschnitt',maxKg:31.5,price:9.30},
+      {id:uid(),name:'Hermes Durchschnitt',maxKg:25,price:6.75},
+    ],
+    fixed: [{id:uid(),name:'Tool-Abo',monthly:0}],
+    settings: {defaultFee:13, fixedOrderFee:0.45, packaging:0.4, lowStockThreshold:2, kleinunternehmer:true, durchstarterEnde:'', discordWebhook:'', ebay:{clientId:'',clientSecret:'',ruName:'',proxyUrl:'',refreshToken:''}},
+  };
+}
+
+function uid(){ return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2,10); }
+function eur(n){ return (Number(n)||0).toLocaleString('de-DE',{style:'currency',currency:'EUR'}); }
+function pct(n){ return (Number(n)||0).toFixed(1)+'%'; }
+function num(v){ return Number(String(v??'').replace(',','.'))||0; }
+function v(id){ return document.getElementById(id)?.value ?? ''; }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+// ---------- Persistenz ----------
+const BACKUP_KEY = 'reseller-center-db-backup';
+const SERVER_CFG_KEY = 'rc-server-config';
+let serverCfg = null; // {enabled, proxyUrl, secret} — klein, liegt immer im lokalen Speicher
+
+// Erkennt, ob wir gerade innerhalb von Claude laufen (window.storage vorhanden)
+// oder standalone im Browser (heruntergeladen/lokal geöffnet, gehostet o.ä.).
+function hasCloudStorage(){ return typeof window.storage !== 'undefined'; }
+
+// Roh-Zugriff auf den LOKALEN Speicher (Claude-Cloud oder Browser) — für die
+// Bootstrap-Config und die Sicherungskopie, unabhängig vom Server-Sync.
+async function localRawGet(key){
+  if(hasCloudStorage()){
+    try{
+      const res = await window.storage.get(key);
+      return res ? res.value : null;
+    }catch(e){ return null; } // Claude-Storage wirft bei fehlendem Key
+  }
+  return localStorage.getItem('rc:'+key);
+}
+async function localRawSet(key, value){
+  if(hasCloudStorage()){
+    const res = await window.storage.set(key, value);
+    if(!res) throw new Error('Speichern fehlgeschlagen');
+    return true;
+  }
+  localStorage.setItem('rc:'+key, value);
+  return true;
+}
+
+// Haupt-Zugriff: Wenn Server-Sync aktiv ist, liegt die eigentliche Datenbank zentral
+// auf deinem Vercel-Server (Upstash Redis) — dieselbe, die auch der Automatik-Sync nutzt.
+async function storageGet(key){
+  if(serverCfg?.enabled && key===STORAGE_KEY){
+    const res = await fetch(`${serverCfg.proxyUrl}/api/db?secret=${encodeURIComponent(serverCfg.secret)}`);
+    if(!res.ok){
+      const d = await res.json().catch(()=>({}));
+      throw new Error(d.error || ('Server antwortete mit '+res.status));
+    }
+    const data = await res.json();
+    return data.db ? JSON.stringify(data.db) : null;
+  }
+  if(hasCloudStorage()){
+    const res = await window.storage.get(key); // kann werfen, wird vom Aufrufer behandelt
+    return res ? res.value : null;
+  }
+  return localStorage.getItem('rc:'+key); // liefert null bei fehlendem Key, wirft nie
+}
+async function storageSet(key, value){
+  if(serverCfg?.enabled && key===STORAGE_KEY){
+    const res = await fetch(`${serverCfg.proxyUrl}/api/db?secret=${encodeURIComponent(serverCfg.secret)}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: value,
+    });
+    if(!res.ok){
+      const d = await res.json().catch(()=>({}));
+      throw new Error(d.error || ('Server antwortete mit '+res.status));
+    }
+    return true;
+  }
+  if(hasCloudStorage()){
+    const res = await window.storage.set(key, value);
+    if(!res) throw new Error('Speichern fehlgeschlagen');
+    return true;
+  }
+  localStorage.setItem('rc:'+key, value);
+  return true;
+}
+
+async function loadDb(){
+  // Zuerst die kleine lokale Config lesen: Ist Server-Sync aktiviert?
+  try{
+    const rawCfg = await localRawGet(SERVER_CFG_KEY);
+    serverCfg = rawCfg ? JSON.parse(rawCfg) : null;
+  }catch(e){ serverCfg = null; }
+
+  let loadedOk = false;
+  let lastError = null;
+  let rawValue = null;
+  // Bis zu 3 Versuche — ein kurzer Netzwerk-Aussetzer darf NIE dazu führen,
+  // dass wir stillschweigend mit leeren Daten weitermachen.
+  for(let attempt=0; attempt<3 && !loadedOk; attempt++){
+    try{
+      rawValue = await storageGet(STORAGE_KEY);
+      loadedOk = true;
+    }catch(e){
+      lastError = e;
+      if(attempt < 2) await new Promise(r=>setTimeout(r, 500)); // kurz warten, nochmal versuchen
+    }
+  }
+
+  if(!loadedOk){
+    // Laden ist trotz mehrerer Versuche fehlgeschlagen. Auf KEINEN FALL mit leeren
+    // Daten weitermachen — das würde beim nächsten Speichern echte Daten überschreiben.
+    document.getElementById('app').innerHTML = `
+      <div class="card-solid" style="border-color:var(--bad)">
+        <h2 class="bad">Daten konnten nicht geladen werden</h2>
+        <p>Deine gespeicherten Daten ließen sich gerade nicht laden (${lastError?.message || 'unbekannter Fehler'}).
+        Um zu verhindern, dass etwas versehentlich überschrieben wird, ist das Tool gerade gesperrt.</p>
+        <button class="btn-primary" onclick="loadDb()">Erneut versuchen</button>
+      </div>`;
+    return;
+  }
+
+  db = rawValue ? JSON.parse(rawValue) : null;
+  if(db === null){
+    // Es gab wirklich noch keinen gespeicherten Stand — Startzustand anlegen.
+    db = defaultDb();
+  } else {
+    // Erfolgreich geladen: sofort eine Sicherungskopie des bekannten guten Stands anlegen,
+    // getrennt vom Hauptschlüssel. Falls später mal etwas schiefgeht, ist das die Rettung.
+    try{ await localRawSet(BACKUP_KEY, JSON.stringify(db)); }catch(e){ /* Sicherung ist best-effort, blockiert nichts */ }
+  }
+
+  if(!db.settings.ebay) db.settings.ebay = {clientId:'',clientSecret:'',ruName:'',proxyUrl:'',refreshToken:''};
+  if(db.settings.ebay.refreshToken === undefined) db.settings.ebay.refreshToken = '';
+  if(db.settings.ebay.proxyUrl === undefined) db.settings.ebay.proxyUrl = '';
+  if(db.settings.kleinunternehmer === undefined) db.settings.kleinunternehmer = true;
+  if(db.settings.fixedOrderFee === undefined) db.settings.fixedOrderFee = 0.45;
+  if(db.settings.durchstarterEnde === undefined) db.settings.durchstarterEnde = '';
+  if(db.settings.discordWebhook === undefined) db.settings.discordWebhook = '';
+  const pill = document.getElementById('storageModePill');
+  if(pill){
+    pill.style.display = 'inline-flex';
+    if(serverCfg?.enabled){
+      pill.textContent = 'Server-Sync aktiv';
+      pill.title = 'Daten liegen zentral auf deinem Vercel-Server — Automatik-Sync und alle Geräte nutzen denselben Stand.';
+    } else {
+      pill.textContent = hasCloudStorage() ? 'Claude-Cloud' : 'Lokal in diesem Browser';
+      pill.title = hasCloudStorage()
+        ? 'Daten sind an dieses Claude-Gespräch/-App gebunden.'
+        : 'Daten bleiben nur auf diesem Gerät/Browser gespeichert — nicht synchron mit der Claude-Vorschau.';
+    }
+  }
+  buildNav();
+  render();
+}
+
+async function restoreFromBackup(){
+  if(!confirm('Aktuellen Stand durch die letzte Sicherungskopie ersetzen? Das kann nicht rückgängig gemacht werden.')) return;
+  try{
+    const raw = await localRawGet(BACKUP_KEY);
+    if(!raw){ alert('Keine Sicherungskopie gefunden.'); return; }
+    db = JSON.parse(raw);
+    await doSave();
+    render();
+    alert('Sicherungskopie wiederhergestellt.');
+  }catch(e){
+    alert('Sicherungskopie konnte nicht geladen werden: ' + e.message);
+  }
+}
+
+function scheduleSave(){
+  setSaveState('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(doSave, 350);
+}
+async function doSave(){
+  try{
+    await storageSet(STORAGE_KEY, JSON.stringify(db));
+    setSaveState('ok');
+  }catch(e){
+    setSaveState('error');
+  }
+}
+function setSaveState(state){
+  const dot = document.getElementById('saveDot');
+  const text = document.getElementById('saveText');
+  if(!dot) return;
+  dot.className = 'dot' + (state==='saving' ? ' saving' : state==='error' ? ' error' : '');
+  text.textContent = state==='saving' ? 'Speichert…' : state==='error' ? 'Nicht gespeichert' : 'Gespeichert';
+}
+function mutate(fn){
+  fn();
+  scheduleSave();
+  render();
+}
+
+// ---------- Kalkulation ----------
+// Alle eingegebenen Preise sind Brutto (Kundenpreise). Als Kleinunternehmer (§19 UStG) wird
+// keine Umsatzsteuer ausgewiesen — sobald das umgestellt wird, zieht die Kalkulation automatisch
+// 19% USt aus dem Bruttopreis heraus, bevor der Gewinn berechnet wird.
+// shipIn = Versand, den der Käufer bezahlt hat (Einnahme). ship = Versandkosten, die du tatsächlich
+// gezahlt hast (Ausgabe). Beides ist bewusst getrennt, weil es selten gleich hoch ist.
+function isKleinunternehmer(){ return db.settings.kleinunternehmer !== false; }
+function productFee(p){
+  return (p && p.fee !== undefined && p.fee !== null && p.fee !== '') ? num(p.fee) : num(db.settings.defaultFee);
+}
+function calc({ek=0,vk=0,fee=0,shipIn=0,ship=0,pack=0,extra=0,qty=1,feeAmountOverride=null}){
+  ek=num(ek); vk=num(vk); fee=num(fee); shipIn=num(shipIn); ship=num(ship); pack=num(pack); extra=num(extra); qty=num(qty)||1;
+  const artikelBrutto = vk*qty;
+  const brutto = artikelBrutto + shipIn; // Gesamtzahlung des Käufers — eBay berechnet die Gebühr meist hierauf
+  const ustAmount = isKleinunternehmer() ? 0 : brutto - brutto/1.19;
+  // Falls eine exakte Gebühr von eBay selbst vorliegt (Finances API), die nutzen statt zu schätzen
+  const feeAmount = (feeAmountOverride!==null && feeAmountOverride!==undefined) ? num(feeAmountOverride) : brutto*fee/100;
+  const feeIsActual = feeAmountOverride!==null && feeAmountOverride!==undefined;
+  const fixedFee = feeIsActual ? 0 : num(db.settings.fixedOrderFee); // in der echten Gebühr schon enthalten
+  const netto = brutto - ustAmount - feeAmount - fixedFee - ship - pack - extra;
+  const wareneinsatz = ek*qty;
+  const gewinn = netto - wareneinsatz;
+  const margin = brutto ? gewinn/brutto*100 : 0;
+  const roi = wareneinsatz ? gewinn/wareneinsatz*100 : 0;
+  return {artikelBrutto, shipIn, brutto, ustAmount, feeAmount, feeIsActual, fixedFee, ship, extra, netto, wareneinsatz, gewinn, margin, roi};
+}
+function getShip(product){ return db.shipping.find(s=>s.id===product?.shippingId) || db.shipping[0]; }
+function bestShipForWeight(weight){
+  const w = num(weight);
+  if(!w) return db.shipping[0];
+  const fits = db.shipping.filter(s=>num(s.maxKg)>=w).sort((a,b)=>num(a.maxKg)-num(b.maxKg));
+  return fits[0] || [...db.shipping].sort((a,b)=>num(b.maxKg)-num(a.maxKg))[0];
+}
+
+// ---------- Navigation ----------
+function buildNav(){
+  const mk = (t) => `<button class="navbtn ${page===t[0]?'active':''}" onclick="goTo('${t[0]}')">${ICONS[t[0]]}<span>${t[1]}</span></button>`;
+  document.getElementById('navSide').innerHTML = TABS.map(mk).join('');
+  document.getElementById('navBottom').innerHTML = TABS.map(mk).join('');
+}
+function goTo(p){ page=p; buildNav(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function render(){
+  const view = {dashboard,products,sales,calculator,shipping,fixed,expenses,settings}[page];
+  document.getElementById('app').innerHTML = view();
+  if(page==='calculator') setTimeout(updateCalc,0);
+}
+
+// ---------- Dashboard ----------
+function dashboard(){
+  const activeSales = db.sales.filter(x=>!x.cancelled);
+  const revenue = activeSales.reduce((s,x)=>s+num(x.vk)*num(x.qty),0);
+  const profit = activeSales.reduce((s,x)=>s+num(x.gewinn),0);
+  const stockValue = db.products.reduce((s,p)=>s+num(p.ek)*num(p.stock),0);
+  const units = db.products.reduce((s,p)=>s+num(p.stock),0);
+  const fixedM = db.fixed.reduce((s,f)=>s+num(f.monthly),0);
+  const expensesM = db.expenses.filter(e=>e.date && e.date.slice(0,7)===todayISO().slice(0,7)).reduce((s,e)=>s+num(e.amount),0);
+  const lowStock = db.products.filter(p=>num(p.stock)<=num(db.settings.lowStockThreshold));
+  const needsReview = db.products.filter(p=>p.needsReview);
+  const recentSales = db.sales.slice(-8).reverse();
+
+  return `
+  <div class="grid kpis">
+    <div class="card-solid kpi"><div class="label">Umsatz gesamt</div><div class="value">${eur(revenue)}</div></div>
+    <div class="card-solid kpi"><div class="label">Gewinn gesamt</div><div class="value ${profit>=0?'good':'bad'}">${eur(profit)}</div></div>
+    <div class="card-solid kpi"><div class="label">Lagerwert</div><div class="value">${eur(stockValue)}</div></div>
+    <div class="card-solid kpi"><div class="label">Stück im Lager</div><div class="value">${units}</div></div>
+    <div class="card-solid kpi"><div class="label">Fixkosten mtl.</div><div class="value">${eur(fixedM)}</div></div>
+    <div class="card-solid kpi"><div class="label">Ausgaben (Monat)</div><div class="value">${eur(expensesM)}</div></div>
+    <div class="card-solid kpi"><div class="label">Ø Marge Verkäufe</div><div class="value">${pct(activeSales.length ? activeSales.reduce((s,x)=>s+num(x.margin),0)/activeSales.length : 0)}</div></div>
+    <div class="card-solid kpi"><div class="label">Artikel < ${db.settings.lowStockThreshold} auf Lager</div><div class="value ${lowStock.length?'bad':'good'}">${lowStock.length}</div></div>
+  </div>
+
+  ${needsReview.length ? `
+  <div class="card" style="border-color:var(--accent);margin-top:14px">
+    <div class="section-title"><h2>⚠ Automatisch angelegte Produkte — EK prüfen (${needsReview.length})</h2><button class="btn-ghost btn-sm" onclick="goTo('products')">Zu Produkte</button></div>
+    <p class="muted" style="margin-top:-6px">Diese Produkte kamen aus automatisch gebuchten eBay-Bestellungen. Einkaufspreis ist noch auf 0 € gesetzt — bitte nachtragen, sonst stimmt der Gewinn nicht.</p>
+    ${needsReview.map(p=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)">
+        <span>${p.name}</span>
+        <button class="btn-primary btn-sm" onclick="goTo('products')">Bearbeiten</button>
+      </div>`).join('')}
+  </div>` : ''}
+
+  <div class="row" style="margin-top:14px">
+    <div class="col-12">
+      <div class="card">
+        <div class="section-title"><h2>Letzte Verkäufe</h2><button class="btn-primary btn-sm" onclick="goTo('sales')">Verkauf buchen</button></div>
+        ${salesTable(recentSales)}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ---------- Produkte ----------
+function productForm(p={}){
+  return `
+  <input type="hidden" id="pid" value="${p.id||''}">
+  <div class="row">
+    <div class="col-4"><label>Produktname *</label><input id="pname" value="${p.name||''}" placeholder="z. B. Kopfhörer Alternativmodell XY"></div>
+    <div class="col-4"><label>Kategorie</label><input id="pcat" list="catlist" value="${p.category||''}" placeholder="frei wählbar, z. B. Elektronik-Zubehör">
+      <datalist id="catlist">${[...new Set(db.products.map(x=>x.category).filter(Boolean))].map(c=>`<option value="${c}">`).join('')}</datalist>
+    </div>
+    <div class="col-4"><label>Lieferant</label><input id="psupplier" value="${p.supplier||''}"></div>
+    <div class="col-4"><label>Marke</label><input id="pbrand" value="${p.brand||''}" placeholder="wird von eBay übernommen, falls vorhanden"></div>
+    <div class="col-3"><label>Einkaufspreis (EK)</label><input id="pek" type="number" step="0.01" value="${p.ek??''}"></div>
+    <div class="col-3"><label>Verkaufspreis (VK)</label><input id="pvk" type="number" step="0.01" value="${p.vk??''}"></div>
+    <div class="col-3"><label>Bestand</label><input id="pstock" type="number" value="${p.stock??0}"></div>
+    <div class="col-3"><label>Gewicht (kg)</label><input id="pweight" type="number" step="0.01" value="${p.weight??''}" oninput="autoSelectShipping()"></div>
+    <div class="col-4"><label>Versandart</label><select id="pship">${db.shipping.map(s=>`<option value="${s.id}" ${(p.shippingId||db.shipping[0]?.id)===s.id?'selected':''}>${s.name} — ${eur(s.price)}</option>`).join('')}</select></div>
+    <div class="col-4"><label>Verkaufsgebühr % (leer = Standard: ${db.settings.defaultFee}%)</label><input id="pfee" type="number" step="0.1" value="${p.fee??''}" placeholder="leer lassen für Standard"></div>
+    <div class="col-4"><label>EAN</label><input id="pean" value="${p.ean||''}" placeholder="Barcode-Nummer, falls vorhanden"></div>
+    <div class="col-9"><label>eBay-Link</label><input id="pebay" value="${p.ebay||''}" placeholder="https://www.ebay.de/itm/..."></div>
+    <input type="hidden" id="pimage" value="${p.image||''}">
+    <div class="col-12" id="pimgpreview">${p.image?`<img src="${p.image}" alt="Produktbild" style="height:70px;border-radius:6px;border:1px solid var(--line)">`:''}</div>
+    <div class="col-3" style="display:flex;align-items:flex-end">
+      <button type="button" class="btn-ghost" style="width:100%" onclick="fetchEbayItem()">Von eBay übernehmen</button>
+    </div>
+    <div class="col-12" id="ebFetchResult"></div>
+    <div class="col-12 actions">
+      <button class="btn-primary" onclick="saveProduct()">Produkt speichern</button>
+      <button class="btn-ghost" onclick="clearProductForm()">Formular leeren</button>
+    </div>
+  </div>`;
+}
+async function fetchEbayItem(){
+  const out = document.getElementById('ebFetchResult');
+  const proxyUrl = db.settings.ebay?.proxyUrl;
+  const link = v('pebay').trim();
+  if(!proxyUrl){
+    out.innerHTML = `<div class="err-banner">Noch kein Server hinterlegt. Trag die Server-Adresse zuerst unter Einstellungen → "eBay-Datenabgleich" ein.</div>`;
+    return;
+  }
+  if(!link){
+    out.innerHTML = `<div class="err-banner">Bitte zuerst einen eBay-Link eintragen.</div>`;
+    return;
+  }
+  out.innerHTML = `<p class="muted">Hole Daten von eBay…</p>`;
+  try{
+    const res = await fetch(`${proxyUrl}/api/ebay-item?url=${encodeURIComponent(link)}`);
+    const data = await res.json();
+    if(!res.ok){
+      out.innerHTML = `<div class="err-banner">${data.error || 'eBay konnte den Artikel nicht liefern.'}</div>`;
+      return;
+    }
+    if(data.title && !v('pname')) document.getElementById('pname').value = data.title;
+    if(data.categoryPath) document.getElementById('pcat').value = data.categoryPath.split('|').pop();
+    if(data.price && !v('pvk')) document.getElementById('pvk').value = data.price;
+    if(data.quantity !== '' && data.quantity !== undefined && !v('pstock')) document.getElementById('pstock').value = data.quantity;
+    if(data.ean && !v('pean')) document.getElementById('pean').value = data.ean;
+    if(data.brand && !v('pbrand')) document.getElementById('pbrand').value = data.brand;
+    if(data.image){
+      document.getElementById('pimage').value = data.image;
+      document.getElementById('pimgpreview').innerHTML = `<img src="${data.image}" alt="Produktbild" style="height:70px;border-radius:6px;border:1px solid var(--line)">`;
+    }
+    const qtyNote = data.quantity!==''&&data.quantity!==undefined ? ` · Bestand: ${data.quantity}${data.quantityIsGuess?' (angenommen, eBay nennt bei Einzelstücken oft keine genaue Zahl)':''}` : '';
+    out.innerHTML = `<div class="note-banner">Übernommen: "${data.title}" · Kategorie: ${data.categoryPath || '—'}${data.condition ? ' · Zustand: '+data.condition : ''}${data.price ? ' · VK: '+data.price+' '+(data.currency||'EUR') : ''}${qtyNote}${data.ean ? ' · EAN: '+data.ean : ''}${data.brand ? ' · Marke: '+data.brand : ''}. Bitte kurz prüfen, bevor du speicherst.</div>`;
+  } catch(e){
+    out.innerHTML = `<div class="err-banner">Server nicht erreichbar (${e.message}). Prüfe die Server-Adresse in den Einstellungen.</div>`;
+  }
+}
+function autoSelectShipping(){
+  const w = v('pweight'); const shipEl = document.getElementById('pship');
+  const best = bestShipForWeight(w);
+  if(shipEl && best) shipEl.value = best.id;
+}
+function products(){
+  return `
+  <div class="card-solid"><h2 id="pfTitle">Produkt anlegen</h2><div id="pf">${productForm()}</div></div>
+  <div class="card">
+    <div class="section-title"><h2>Alle Produkte (${db.products.length})</h2><input style="max-width:220px" placeholder="Suchen…" oninput="filterProducts(this.value)"></div>
+    <div id="plist">${productsTable(db.products)}</div>
+  </div>`;
+}
+function productsTable(list){
+  if(!list.length) return `<div class="empty">Noch keine Produkte angelegt.</div>`;
+  return `<div class="table-wrap"><table><thead><tr>
+    <th>Produkt</th><th>EK</th><th>VK</th><th>Bestand</th><th>Versand</th><th>Gewinn/Stk.</th><th></th>
+  </tr></thead><tbody>${list.map(p=>{
+    const sh = getShip(p);
+    const c = calc({ek:p.ek,vk:p.vk,fee:productFee(p),ship:sh.price,pack:db.settings.packaging,qty:1});
+    const low = num(p.stock) <= num(db.settings.lowStockThreshold);
+    return `<tr>
+      <td style="min-width:200px"><div style="display:flex;align-items:center;gap:9px">${p.image?`<img src="${p.image}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:5px;border:1px solid var(--line);flex-shrink:0">`:''}<div><b>${p.name}</b>${p.needsReview?' <span class="pill warn">EK prüfen</span>':''}<br><span class="muted">${p.category||''}${p.brand?' · '+p.brand:''}${p.supplier?' · '+p.supplier:''}</span></div></div></td>
+      <td class="mono">${eur(p.ek)}</td>
+      <td class="mono">${eur(p.vk)}</td>
+      <td class="mono ${low?'bad':''}">${p.stock||0}${low?' ⚠':''}</td>
+      <td>${sh?.name||''}</td>
+      <td class="mono ${c.gewinn>=0?'good':'bad'}">${eur(c.gewinn)}</td>
+      <td class="actions">
+        <button class="btn-primary btn-sm" onclick="quickSell('${p.id}')">Verkaufen</button>
+        <button class="btn-ghost btn-sm" onclick="editProduct('${p.id}')">Bearb.</button>
+        <button class="btn-danger btn-sm" onclick="delProduct('${p.id}')">Löschen</button>
+      </td>
+    </tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+function filterProducts(q){
+  q = q.toLowerCase();
+  document.getElementById('plist').innerHTML = productsTable(
+    db.products.filter(p => (p.name+p.category+(p.brand||'')+(p.supplier||'')).toLowerCase().includes(q))
+  );
+}
+function saveProduct(){
+  const pid = v('pid');
+  const old = db.products.find(p=>p.id===pid) || {};
+  const name = v('pname').trim(), category = v('pcat').trim();
+  if(!name){ alert('Produktname ist ein Pflichtfeld.'); return; }
+  const p = {
+    ...old, id: pid || uid(), name, category,
+    supplier: v('psupplier'), brand: v('pbrand'), ek: num(v('pek')), vk: num(v('pvk')), stock: num(v('pstock')),
+    weight: num(v('pweight')),
+    shippingId: v('pship') || bestShipForWeight(v('pweight'))?.id,
+    fee: v('pfee').trim()==='' ? undefined : num(v('pfee')),
+    ebay: v('pebay'), ean: v('pean'), image: v('pimage'),
+    needsReview: false,
+  };
+  mutate(()=>{
+    const i = db.products.findIndex(x=>x.id===p.id);
+    if(i>=0) db.products[i]=p; else db.products.push(p);
+  });
+}
+function editProduct(id){
+  const p = db.products.find(x=>x.id===id);
+  document.getElementById('pfTitle').textContent = 'Produkt bearbeiten';
+  document.getElementById('pf').innerHTML = productForm(p);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function clearProductForm(){
+  document.getElementById('pfTitle').textContent = 'Produkt anlegen';
+  document.getElementById('pf').innerHTML = productForm();
+}
+function delProduct(id){
+  if(confirm('Produkt wirklich löschen?')) mutate(()=>{ db.products = db.products.filter(p=>p.id!==id); });
+}
+// Automatisierung: Schnellverkauf direkt aus der Produktliste — bucht Bestand automatisch ab
+function quickSell(id){
+  const p = db.products.find(x=>x.id===id);
+  if(!p) return;
+  const qtyStr = prompt(`"${p.name}" verkaufen — Menge?`, '1');
+  if(qtyStr===null) return;
+  const qty = Math.max(1, Math.round(num(qtyStr)));
+  if(qty > num(p.stock)){ if(!confirm(`Nur ${p.stock} Stück auf Lager. Trotzdem ${qty} verbuchen?`)) return; }
+  bookSaleFor(p, qty, p.vk, 'eBay', 'inland');
+}
+
+// ---------- Verkäufe (Automatisierung: Bestand wird automatisch reduziert) ----------
+function sales(){
+  return `
+  <div class="card-solid" style="border-color:var(--accent)">
+    <div class="section-title"><h2>Offene eBay-Bestellungen abrufen</h2><button class="btn-primary btn-sm" onclick="fetchEbayOrders()">Jetzt abrufen</button></div>
+    <p class="muted" style="margin-top:-6px">Holt deine aktuell offenen Bestellungen direkt von eBay — Bestand wird beim Buchen automatisch abgezogen, genau wie beim manuellen Verkauf.</p>
+    <div id="ebOrdersResult"><p class="muted">Noch nicht abgerufen.</p></div>
+  </div>
+  <div class="card-solid">
+    <h2>Verkauf manuell buchen</h2>
+    <div class="row">
+      <div class="col-4"><label>Produkt</label><select id="sprod" onchange="loadSaleProduct()">
+        <option value="">Produkt wählen…</option>
+        ${db.products.map(p=>`<option value="${p.id}">${p.name} (${p.stock||0} Stk.)</option>`).join('')}
+      </select></div>
+      <div class="col-2"><label>Artikelpreis €</label><input id="svk" type="number" step="0.01"></div>
+      <div class="col-2"><label>Menge</label><input id="sqty" type="number" value="1"></div>
+      <div class="col-2"><label>Plattform</label><select id="splatform">
+        <option>eBay</option><option>Vinted</option><option>Kleinanzeigen</option><option>Sonstige</option>
+      </select></div>
+      <div class="col-2"><label>Region</label><select id="sregion" onchange="applyRegionShipping()">
+        <option value="inland">Inland (DE)</option>
+        <option value="eu">EU-Ausland</option>
+        <option value="ch">Schweiz</option>
+        <option value="intl">International</option>
+      </select></div>
+      <div class="col-3"><label>Transaktionsgebühr % (bearbeitbar)</label><input id="sfee" type="number" step="0.1"></div>
+      <div class="col-3"><label>Versand — vom Käufer erhalten €</label><input id="sshipin" type="number" step="0.01" placeholder="0,00 — falls Käufer extra zahlt"></div>
+      <div class="col-3"><label>Versand — tatsächlich gezahlt €</label><input id="sship" type="number" step="0.01" placeholder="an DHL/Hermes etc."></div>
+      <div class="col-3"><label>Anzeige-/Werbekosten €</label><input id="sextra" type="number" step="0.01" placeholder="0,00 — nur falls angefallen"></div>
+      <div class="col-12"><button class="btn-primary" onclick="bookSale()">Verkauf speichern & Bestand automatisch abbuchen</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>Verkaufshistorie (${db.sales.filter(s=>!s.cancelled).length} aktiv, ${db.sales.filter(s=>s.cancelled).length} storniert)</h2>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="showCancelled" onchange="toggleShowCancelled()" ${salesShowCancelled?'checked':''} style="width:auto"> Stornierte anzeigen
+      </label>
+    </div>
+    <p class="muted" style="margin-top:-6px">Alle Beträge kannst du jederzeit direkt in der Tabelle nachtragen — der Gewinn wird automatisch neu berechnet. "Quelle" zeigt dir, ob ein Verkauf von Hand oder automatisch von der eBay-Synchronisierung gebucht wurde.</p>
+    ${salesShowCancelled ? `<div class="actions" style="margin-bottom:10px"><button class="btn-danger btn-sm" onclick="deleteCancelledSales()">Alle stornierten endgültig löschen</button></div>` : ''}
+    ${salesTable(db.sales.filter(s=>salesShowCancelled || !s.cancelled).slice().reverse())}
+  </div>`;
+}
+let salesShowCancelled = false;
+function toggleShowCancelled(){
+  salesShowCancelled = document.getElementById('showCancelled').checked;
+  render();
+}
+function deleteCancelledSales(){
+  const n = db.sales.filter(s=>s.cancelled).length;
+  if(!n){ alert('Keine stornierten Verkäufe vorhanden.'); return; }
+  if(!confirm(`${n} stornierte Verkäufe wirklich endgültig löschen? Das kann nicht rückgängig gemacht werden (Bestand wurde beim Stornieren schon zurückgebucht, das bleibt unverändert).`)) return;
+  mutate(()=>{ db.sales = db.sales.filter(s=>!s.cancelled); });
+}
+async function fetchEbayOrders(){
+  const out = document.getElementById('ebOrdersResult');
+  const proxyUrl = db.settings.ebay?.proxyUrl;
+  const refreshToken = db.settings.ebay?.refreshToken;
+  if(!proxyUrl){ out.innerHTML = `<div class="err-banner">Noch kein Server hinterlegt (Einstellungen → eBay-Datenabgleich).</div>`; return; }
+  if(!refreshToken){ out.innerHTML = `<div class="err-banner">Noch kein Refresh-Token hinterlegt. Erst unter Einstellungen bei eBay anmelden.</div>`; return; }
+  out.innerHTML = `<p class="muted">Hole Bestellungen…</p>`;
+  try{
+    const res = await fetch(`${proxyUrl}/api/ebay-orders?refreshToken=${encodeURIComponent(refreshToken)}`);
+    const data = await res.json();
+    if(!res.ok){ out.innerHTML = `<div class="err-banner">${data.error || 'Bestellungen konnten nicht geladen werden.'}</div>`; return; }
+    if(!data.orders?.length){ out.innerHTML = `<div class="note-banner">Keine offenen Bestellungen gefunden.</div>`; return; }
+    window.__ebOrders = data.orders; // zwischenspeichern für die Buchen-Buttons
+    out.innerHTML = data.orders.map((o,oi)=>`
+      <div class="card" style="margin-bottom:10px">
+        <div class="section-title"><b>${o.buyer || 'Käufer'}</b><span class="pill info">${({inland:'Inland',eu:'EU',ch:'Schweiz',intl:'International'})[o.region]||o.region}</span></div>
+        ${o.items.map((li,ii)=>{
+          const guess = db.products.find(p=>p.name && (li.title.toLowerCase().includes(p.name.toLowerCase()) || p.name.toLowerCase().includes(li.title.toLowerCase())));
+          return `<div class="row" style="align-items:flex-end;margin-bottom:6px">
+            <div class="col-6"><label>eBay-Titel</label><input value="${li.title.replace(/"/g,'&quot;')}" disabled></div>
+            <div class="col-4"><label>Zuordnen zu Produkt</label><select id="ebmatch-${oi}-${ii}">
+              <option value="__new__" ${!guess?'selected':''}>✨ Neues Produkt automatisch anlegen</option>
+              ${db.products.map(p=>`<option value="${p.id}" ${guess?.id===p.id?'selected':''}>${p.name}</option>`).join('')}
+            </select></div>
+            <div class="col-2"><button class="btn-primary btn-sm" style="width:100%" onclick="bookEbayOrder(${oi},${ii})">Buchen</button></div>
+          </div>`;
+        }).join('')}
+      </div>`).join('');
+  } catch(e){
+    out.innerHTML = `<div class="err-banner">Server nicht erreichbar (${e.message}).</div>`;
+  }
+}
+function bookEbayOrder(oi, ii){
+  const o = window.__ebOrders?.[oi]; const li = o?.items?.[ii]; if(!li) return;
+  const pid = v(`ebmatch-${oi}-${ii}`);
+  const vk = li.quantity ? li.lineItemPrice/li.quantity : li.lineItemPrice;
+  const shipIn = ii===0 ? o.shippingCost : 0; // Versand nur beim ersten Artikel der Bestellung ansetzen, um ihn nicht doppelt zu zählen
+  const actualFee = (ii===0 && o.actualFeeAmount!==undefined) ? o.actualFeeAmount : null; // echte Gebühr ebenfalls nur einmal pro Bestellung ansetzen
+
+  let p = db.products.find(x=>x.id===pid);
+  let isNew = false;
+  if(pid === '__new__' || !p){
+    // Kein passendes Produkt vorhanden — automatisch neu anlegen, EK bewusst auf 0 (muss nachgetragen werden)
+    p = {
+      id: uid(), name: li.title, category: '', supplier: '', brand: '',
+      ek: 0, vk, stock: 0, weight: 0, shippingId: db.shipping[0]?.id,
+      ebay: '', ean: li.sku || '', needsReview: true,
+    };
+    mutate(()=>{ db.products.push(p); });
+    isNew = true;
+  }
+  bookSaleFor(p, li.quantity||1, vk, 'eBay', o.region, null, null, 0, shipIn, actualFee, {ebayOrderId: o.orderId, ebayLineItemId: li.lineItemId||'', buyer: o.buyer||''});
+  alert(isNew
+    ? `"${li.title}" als neues Produkt angelegt und Verkauf gebucht${actualFee!==null?' (echte Gebühr von eBay übernommen: '+eur(actualFee)+')':''}. Bitte Einkaufspreis unter Produkte nachtragen!`
+    : `"${li.title}" als Verkauf gebucht${actualFee!==null?' (echte Gebühr von eBay übernommen: '+eur(actualFee)+')':''}.`);
+}
+function applyRegionShipping(){
+  const region = v('sregion');
+  const p = db.products.find(x=>x.id===v('sprod'));
+  const shipEl = document.getElementById('sship');
+  if(region === 'inland' && p && num(p.weight) > 0){
+    shipEl.value = getShip(p).price; // nur automatisch, wenn ein echtes Gewicht hinterlegt ist
+  } else {
+    shipEl.value = ''; // kein Gewicht bekannt oder Ausland → bewusst leer für manuelle Eingabe
+  }
+}
+function salesTable(list){
+  if(!list.length) return `<div class="empty">Keine Verkäufe in dieser Ansicht.</div>`;
+  const REGION_LABEL = {inland:'Inland', eu:'EU', ch:'Schweiz', intl:'International'};
+  return `<div class="table-wrap"><table><thead><tr>
+    <th>Datum</th><th>Produkt</th><th>Quelle</th><th>Region</th><th>Menge</th><th>EK €</th><th>Artikel €</th><th>Gebühr %</th><th title="Versand vom Käufer erhalten">Versand ↑ €</th><th title="Versand tatsächlich gezahlt">Versand ↓ €</th><th>Zusatzgeb. €</th><th>Gewinn</th><th></th>
+  </tr></thead><tbody>${list.map(s=>`<tr style="${s.cancelled?'opacity:.5':''}">
+    <td class="mono" style="white-space:nowrap">${new Date(s.date).toLocaleDateString('de-DE')}</td>
+    <td style="min-width:180px">${s.productName}<br><span class="muted">${s.platform}</span></td>
+    <td style="white-space:nowrap"><span class="pill ${s.source==='auto'?'warn':'info'}">${s.source==='auto'?'Automatisch':'Manuell'}</span></td>
+    <td style="white-space:nowrap"><span class="pill info">${REGION_LABEL[s.region]||'Inland'}</span>${s.cancelled?' <span class="pill warn">Storniert</span>':''}</td>
+    <td class="mono">${s.qty}</td>
+    <td><input type="number" step="0.01" value="${s.ek??0}" style="width:110px${(s.ek===0||!s.ek)?';border-color:var(--accent)':''}" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','ek',this.value)"></td>
+    <td><input type="number" step="0.01" value="${s.vk}" style="width:110px" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','vk',this.value)"></td>
+    <td>${s.feeIsActual
+      ? `<span class="pill info" title="Echte Gebühr von eBay: ${eur(s.feeAmount)}">echt: ${eur(s.feeAmount)}</span>`
+      : `<input type="number" step="0.1" value="${s.fee??0}" style="width:90px" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','fee',this.value)">`}</td>
+    <td><input type="number" step="0.01" value="${s.shipIn??0}" placeholder="0,00" style="width:110px" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','shipIn',this.value)"></td>
+    <td><input type="number" step="0.01" value="${s.ship??''}" placeholder="—" style="width:110px" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','ship',this.value)"></td>
+    <td><input type="number" step="0.01" value="${s.extra??0}" placeholder="0,00" style="width:110px" ${s.cancelled?'disabled':''} onchange="editSale('${s.id}','extra',this.value)"></td>
+    <td class="mono ${s.gewinn>=0?'good':'bad'}" style="white-space:nowrap">${eur(s.gewinn)}</td>
+    <td>${s.cancelled ? '' : `<button class="btn-danger btn-sm" onclick="cancelSale('${s.id}')">Stornieren</button>`}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+function loadSaleProduct(){
+  const p = db.products.find(x=>x.id===v('sprod'));
+  if(!p) return;
+  document.getElementById('svk').value = p.vk||'';
+  document.getElementById('sfee').value = productFee(p);
+  document.getElementById('sshipin').value = '';
+  document.getElementById('sextra').value = '';
+  applyRegionShipping();
+}
+function bookSale(){
+  const p = db.products.find(x=>x.id===v('sprod'));
+  if(!p){ alert('Bitte ein Produkt wählen.'); return; }
+  const qty = Math.max(1, Math.round(num(v('sqty'))||1));
+  bookSaleFor(p, qty, num(v('svk')), v('splatform'), v('sregion'), v('sship'), num(v('sfee')), num(v('sextra')), num(v('sshipin')));
+}
+function bookSaleFor(p, qty, vk, platform, region='inland', shipRaw=null, feeOverride=null, extra=0, shipIn=0, feeAmountOverride=null, meta={}){
+  const ship = (shipRaw===null || shipRaw==='') ? getShip(p).price : num(shipRaw);
+  const fee = feeOverride===null ? productFee(p) : feeOverride;
+  const c = calc({ek:p.ek, vk, fee, shipIn, ship, pack:db.settings.packaging, extra, qty, feeAmountOverride});
+  mutate(()=>{
+    p.stock = Math.max(0, num(p.stock) - qty); // Automatik: Bestand wird abgebucht
+    db.sales.push({
+      id: uid(), date: new Date().toISOString(), productId: p.id, productName: p.name,
+      platform, region, qty, vk, fee, ship, shipIn, ek: p.ek, cancelled: false, ...meta, ...c,
+    });
+  });
+  goTo('sales');
+}
+function editSale(id, field, val){
+  const s = db.sales.find(x=>x.id===id); if(!s) return;
+  mutate(()=>{
+    s[field] = num(val);
+    const c = calc({ek:s.ek, vk:s.vk, fee:s.fee, shipIn:s.shipIn, ship:s.ship, extra:s.extra, pack:db.settings.packaging, qty:s.qty, feeAmountOverride: s.feeIsActual ? s.feeAmount : null});
+    Object.assign(s, c);
+  });
+}
+function cancelSale(id){
+  const s = db.sales.find(x=>x.id===id); if(!s || s.cancelled) return;
+  if(!confirm(`Verkauf von "${s.productName}" wirklich stornieren? Der Bestand (${s.qty} Stk.) wird automatisch zurückgebucht.`)) return;
+  mutate(()=>{
+    s.cancelled = true;
+    const p = db.products.find(x=>x.id===s.productId);
+    if(p) p.stock = num(p.stock) + num(s.qty); // Automatik: Bestand bei Stornierung zurückbuchen
+  });
+}
+
+// ---------- Gewinnrechner ----------
+function calculator(){
+  const options = db.products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  return `
+  <div class="row">
+    <div class="col-6"><div class="card-solid">
+      <h2>Gewinnrechner</h2>
+      <div class="row">
+        <div class="col-12"><label>Produkt laden (optional)</label><select id="cprod" onchange="loadCalcProduct()"><option value="">Manuell eingeben</option>${options}</select></div>
+        <div class="col-6"><label>Artikelpreis (Brutto)</label><input id="cvk" type="number" step="0.01" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Menge</label><input id="cqty" type="number" value="1" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Einkaufspreis</label><input id="cek" type="number" step="0.01" oninput="updateCalc()"></div>
+        <div class="col-6"><label>eBay-Gebühr %</label><input id="cfee" type="number" step="0.1" value="${db.settings.defaultFee}" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Versand — vom Käufer erhalten</label><input id="cshipin" type="number" step="0.01" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Versand — tatsächlich gezahlt</label><input id="cship" type="number" step="0.01" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Verpackung</label><input id="cpack" type="number" step="0.01" value="${db.settings.packaging}" oninput="updateCalc()"></div>
+        <div class="col-6"><label>Anzeige-/Werbekosten €</label><input id="cextra" type="number" step="0.01" oninput="updateCalc()"></div>
+      </div>
+    </div></div>
+    <div class="col-6"><div class="card-solid" id="cout"></div></div>
+  </div>`;
+}
+function calcBox(c){
+  return `
+  <h2>Ergebnis</h2>
+  <div class="bigprofit ${c.gewinn>=0?'good':'bad'}">${eur(c.gewinn)}</div>
+  <p class="muted" style="margin-top:-6px">Gewinn nach allen Kosten</p>
+  <table style="margin-top:10px">
+    <tr><td>Artikelpreis</td><td class="mono" style="text-align:right">${eur(c.artikelBrutto)}</td></tr>
+    ${c.shipIn > 0 ? `<tr><td>+ Versand vom Käufer erhalten</td><td class="mono" style="text-align:right">${eur(c.shipIn)}</td></tr>` : ''}
+    <tr><td>= Umsatz (Brutto)</td><td class="mono" style="text-align:right"><b>${eur(c.brutto)}</b></td></tr>
+    ${c.ustAmount > 0 ? `<tr><td>− Umsatzsteuer (19%)</td><td class="mono" style="text-align:right">${eur(c.ustAmount)}</td></tr>` : ''}
+    <tr><td>− eBay-Gebühr (%)</td><td class="mono" style="text-align:right">${eur(c.feeAmount)}</td></tr>
+    <tr><td>− Fixgebühr pro Bestellung</td><td class="mono" style="text-align:right">${eur(c.fixedFee)}</td></tr>
+    <tr><td>− Versand tatsächlich gezahlt</td><td class="mono" style="text-align:right">${eur(c.ship)}</td></tr>
+    ${c.extra > 0 ? `<tr><td>− Anzeige-/Werbekosten</td><td class="mono" style="text-align:right">${eur(c.extra)}</td></tr>` : ''}
+    <tr><td>= Netto-Erlös</td><td class="mono" style="text-align:right"><b>${eur(c.netto)}</b></td></tr>
+    <tr><td>− Wareneinsatz (EK)</td><td class="mono" style="text-align:right">${eur(c.wareneinsatz)}</td></tr>
+    <tr><td><b>= Gewinn</b></td><td class="mono" style="text-align:right"><b class="${c.gewinn>=0?'good':'bad'}">${eur(c.gewinn)}</b></td></tr>
+  </table>
+  ${isKleinunternehmer() ? '<p class="muted" style="margin-top:8px">Kleinunternehmer-Regelung (§19 UStG) aktiv — keine Umsatzsteuer ausgewiesen.</p>' : ''}
+  <p style="margin-top:10px">Marge: <b>${pct(c.margin)}</b> · ROI: <b>${pct(c.roi)}</b></p>`;
+}
+function loadCalcProduct(){
+  const p = db.products.find(x=>x.id===v('cprod'));
+  if(!p) return;
+  const sh = getShip(p);
+  document.getElementById('cvk').value = p.vk||'';
+  document.getElementById('cek').value = p.ek||'';
+  document.getElementById('cfee').value = productFee(p);
+  document.getElementById('cshipin').value = '';
+  document.getElementById('cship').value = sh.price;
+  document.getElementById('cpack').value = db.settings.packaging;
+  updateCalc();
+}
+function updateCalc(){
+  const c = calc({ek:v('cek'),vk:v('cvk'),fee:v('cfee'),shipIn:v('cshipin'),ship:v('cship'),pack:v('cpack'),extra:v('cextra'),qty:v('cqty')});
+  const o = document.getElementById('cout');
+  if(o) o.innerHTML = calcBox(c);
+}
+
+// ---------- Versandarten ----------
+function shipping(){
+  return `
+  <div class="card">
+    <div class="section-title"><h2>Versandarten</h2><button class="btn-primary btn-sm" onclick="addShip()">+ Hinzufügen</button></div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Max. kg</th><th>Preis</th><th></th></tr></thead><tbody>
+      ${db.shipping.map(s=>`<tr>
+        <td><input value="${s.name}" onchange="editShip('${s.id}','name',this.value)"></td>
+        <td><input type="number" step="0.01" value="${s.maxKg}" onchange="editShip('${s.id}','maxKg',this.value)"></td>
+        <td><input type="number" step="0.01" value="${s.price}" onchange="editShip('${s.id}','price',this.value)"></td>
+        <td><button class="btn-danger btn-sm" onclick="delShip('${s.id}')">Löschen</button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <p class="muted" style="margin-top:10px">Beim Anlegen eines Produkts wird anhand des Gewichts automatisch die passende, günstigste Versandart vorausgewählt.</p>
+  </div>`;
+}
+function addShip(){ mutate(()=>{ db.shipping.push({id:uid(),name:'Neue Versandart',maxKg:1,price:0}); }); }
+function editShip(id,k,val){
+  const s = db.shipping.find(x=>x.id===id); if(!s) return;
+  s[k] = k==='name' ? val : num(val);
+  scheduleSave();
+}
+function delShip(id){ mutate(()=>{ db.shipping = db.shipping.filter(s=>s.id!==id); }); }
+
+// ---------- Fixkosten ----------
+function fixed(){
+  return `
+  <div class="card">
+    <div class="section-title"><h2>Fixkosten monatlich</h2><button class="btn-primary btn-sm" onclick="addFixed()">+ Hinzufügen</button></div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>€ / Monat</th><th></th></tr></thead><tbody>
+      ${db.fixed.map(f=>`<tr>
+        <td><input value="${f.name}" onchange="editFixed('${f.id}','name',this.value)"></td>
+        <td><input type="number" step="0.01" value="${f.monthly}" onchange="editFixed('${f.id}','monthly',this.value)"></td>
+        <td><button class="btn-danger btn-sm" onclick="delFixed('${f.id}')">Löschen</button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <p class="muted" style="margin-top:10px">Summe: <b>${eur(db.fixed.reduce((s,f)=>s+num(f.monthly),0))}</b> / Monat</p>
+  </div>`;
+}
+function addFixed(){ mutate(()=>{ db.fixed.push({id:uid(),name:'Neue Fixkosten',monthly:0}); }); }
+function editFixed(id,k,val){
+  const f = db.fixed.find(x=>x.id===id); if(!f) return;
+  f[k] = k==='name' ? val : num(val);
+  scheduleSave();
+}
+function delFixed(id){ mutate(()=>{ db.fixed = db.fixed.filter(f=>f.id!==id); }); }
+
+// ---------- Ausgaben ----------
+function expenses(){
+  return `
+  <div class="card">
+    <div class="section-title"><h2>Geschäftsausgaben</h2><button class="btn-primary btn-sm" onclick="addExpense()">+ Hinzufügen</button></div>
+    <div class="table-wrap"><table><thead><tr><th>Datum</th><th>Name</th><th>Kategorie</th><th>Betrag</th><th></th></tr></thead><tbody>
+      ${db.expenses.slice().reverse().map(e=>`<tr>
+        <td><input type="date" value="${e.date}" onchange="editExpense('${e.id}','date',this.value)"></td>
+        <td><input value="${e.name}" onchange="editExpense('${e.id}','name',this.value)"></td>
+        <td><input value="${e.category}" onchange="editExpense('${e.id}','category',this.value)"></td>
+        <td><input type="number" step="0.01" value="${e.amount}" onchange="editExpense('${e.id}','amount',this.value)"></td>
+        <td><button class="btn-danger btn-sm" onclick="delExpense('${e.id}')">Löschen</button></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+function addExpense(){ mutate(()=>{ db.expenses.push({id:uid(),date:todayISO(),name:'Kartons / Material',category:'Verpackung',amount:0}); }); }
+function editExpense(id,k,val){
+  const e = db.expenses.find(x=>x.id===id); if(!e) return;
+  e[k] = k==='amount' ? num(val) : val;
+  scheduleSave();
+}
+function delExpense(id){ mutate(()=>{ db.expenses = db.expenses.filter(e=>e.id!==id); }); }
+
+// ---------- Einstellungen ----------
+function settings(){
+  return `
+  <div class="card-solid">
+    <div class="section-title"><h2>Umsatzsteuer</h2><span class="pill ${isKleinunternehmer()?'info':'warn'}">${isKleinunternehmer()?'Kleinunternehmer · keine USt':'Regelbesteuert · 19% USt'}</span></div>
+    <p class="muted">Alle Preise im Tool sind Brutto-Preise (das, was der Kunde zahlt). Als Kleinunternehmer weist du keine Umsatzsteuer aus — dein Gewinn entspricht direkt dem Bruttoerlös abzüglich Kosten. Sobald du regelbesteuert bist, zieht die Kalkulation automatisch 19% USt heraus, bevor der Gewinn berechnet wird.</p>
+    <div class="actions" style="margin-top:10px">
+      <button class="${isKleinunternehmer()?'btn-primary':'btn-ghost'}" onclick="setTaxMode(true)">Kleinunternehmer (§19 UStG) — noch keine USt</button>
+      <button class="${!isKleinunternehmer()?'btn-primary':'btn-ghost'}" onclick="setTaxMode(false)">Regelbesteuert — 19% USt automatisch abziehen</button>
+    </div>
+  </div>
+  <div class="card-solid">
+    <h2>Einstellungen</h2>
+    <div class="row">
+      <div class="col-4"><label>Standard eBay-Gebühr %</label><input id="setfee" type="number" step="0.1" value="${db.settings.defaultFee}"></div>
+      <div class="col-4"><label>Fixgebühr pro Bestellung €</label><input id="setfixfee" type="number" step="0.01" value="${db.settings.fixedOrderFee??0.45}"></div>
+      <div class="col-4"><label>Standard Verpackung €</label><input id="setpack" type="number" step="0.01" value="${db.settings.packaging}"></div>
+      <div class="col-4"><label>Warnschwelle Bestand (Stk.)</label><input id="setlow" type="number" value="${db.settings.lowStockThreshold}"></div>
+      <div class="col-8"><label>Durchstarter-Programm läuft bis (0% Gebühr, optional)</label><input id="setdurchstarter" type="date" value="${db.settings.durchstarterEnde||''}"></div>
+      <div class="col-12"><button class="btn-primary" onclick="saveSettings()">Einstellungen speichern</button></div>
+    </div>
+    ${db.settings.durchstarterEnde && todayISO() >= db.settings.durchstarterEnde ? `
+      <div class="note-banner" style="margin-top:12px;border-color:var(--accent);color:var(--accent);background:var(--accent-bg)">
+        Dein Durchstarter-Zeitraum ist laut deiner Eintragung vorbei — vergiss nicht, die "Standard eBay-Gebühr %" oben wieder auf deinen echten Kategoriesatz zu stellen.
+      </div>` : ''}
+  </div>
+  <div class="card">
+    <h2>Daten</h2>
+    <p class="muted">Backup als Datei sichern oder von einer anderen Datei wiederherstellen. Export als CSV für Excel/Tabellen.</p>
+    <div class="actions">
+      <button class="btn-ghost" onclick="exportBackup()">Backup exportieren (.json)</button>
+      <label class="btn-ghost" style="cursor:pointer">Backup importieren<input type="file" accept="application/json" class="hidden" onchange="importBackup(event)"></label>
+      <button class="btn-ghost" onclick="exportCsv('products')">Produkte als CSV</button>
+      <button class="btn-ghost" onclick="exportCsv('sales')">Verkäufe als CSV</button>
+      <button class="btn-ghost" onclick="restoreFromBackup()">Aus Sicherungskopie wiederherstellen</button>
+      <button class="btn-danger" onclick="resetAll()">Alle Daten löschen</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>eBay-Anbindung (direkt) <span class="pill info">Vorbereitet</span></h2></div>
+    <p class="muted">Trage hier deine eBay-Entwickler-Zugangsdaten ein, sobald du sie unter <code>developer.ebay.com</code> angelegt hast.</p>
+    <div class="row">
+      <div class="col-4"><label>App ID (Client ID)</label><input id="ebclientid" value="${db.settings.ebay.clientId||''}" placeholder="z. B. DeinName-App-PRD-..."></div>
+      <div class="col-4"><label>Cert ID (Client Secret)</label><input id="ebclientsecret" type="password" value="${db.settings.ebay.clientSecret||''}"></div>
+      <div class="col-4"><label>RuName (Redirect)</label><input id="ebruname" value="${db.settings.ebay.ruName||''}" placeholder="z. B. DeinName-App-...RuName"></div>
+      <div class="col-12 actions">
+        <button class="btn-primary" onclick="saveEbay()">Zugangsdaten speichern</button>
+        <button class="btn-ghost" onclick="startEbayAuth()">Bei eBay anmelden & Zugriff erlauben</button>
+      </div>
+      <div class="col-12" id="ebResult"></div>
+      <div class="col-12"><label>Refresh-Token (bekommst du nach dem eBay-Login angezeigt)</label><textarea id="ebrefresh" placeholder="hier einfügen, sobald du es nach dem eBay-Login siehst">${db.settings.ebay.refreshToken||''}</textarea></div>
+      <div class="col-12"><button class="btn-primary" onclick="saveEbayRefresh()">Refresh-Token speichern</button></div>
+    </div>
+    <div class="note-banner" style="margin-top:12px">
+      Ablauf: Zugangsdaten hier eingeben und speichern, dann auf "Bei eBay anmelden" klicken — das öffnet die echte eBay-Login-Seite in einem neuen Tab, auf der <b>du</b> dich einloggst und den Zugriff bestätigst (Client Secret verlässt dafür nie diese Seite). eBay leitet dich danach an den Server weiter, der dir ein <b>Refresh-Token</b> anzeigt — das kopierst du hier ins Feld oben. Ab dann kann das Tool jederzeit deine offenen Bestellungen abrufen, ohne dass du dich erneut einloggen musst.
+      <br><br>Ich hab die Berechtigung für die <b>Finances API</b> schon mit in den Anmelde-Link eingebaut (<code>sell.finances</code>). Sobald das läuft, kann das Tool die tatsächlich abgezogenen Gebühren pro Bestellung direkt von eBay abrufen — statt wie jetzt nur mit deiner geschätzten Prozent-Gebühr zu rechnen.
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>eBay-Datenabgleich (Kategorie/Titel aus Link) <span class="pill info">Server nötig</span></h2></div>
+    <p class="muted">Sobald der kleine Server läuft (Anleitung hab ich dir als Download gegeben), trag hier seine Adresse ein — dann funktioniert der "Von eBay übernehmen"-Knopf im Produktformular und der Bestellabgleich.</p>
+    <div class="row">
+      <div class="col-12"><label>Server-Adresse</label><input id="ebproxyurl" value="${db.settings.ebay.proxyUrl||''}" placeholder="https://dein-projekt.vercel.app"></div>
+      <div class="col-12"><button class="btn-primary" onclick="saveEbayProxy()">Server-Adresse speichern</button></div>
+    </div>
+  </div>
+  <div class="card-solid" style="border-color:${serverCfg?.enabled ? 'var(--good)' : 'var(--accent)'}">
+    <div class="section-title"><h2>Automatisierung (Server-Sync + Discord)</h2><span class="pill ${serverCfg?.enabled?'info':'warn'}">${serverCfg?.enabled?'AKTIV':'Nicht aktiv'}</span></div>
+    <p class="muted">Wenn aktiviert, liegen deine Daten zentral auf deinem Vercel-Server. Ein kostenloser Zeitplan-Dienst (cron-job.org) stößt dann regelmäßig den Abgleich an: neue eBay-Bestellungen werden vollautomatisch gebucht, der Bestand reduziert, und du bekommst pro Verkauf eine Discord-Nachricht — ganz ohne dein Zutun. Einrichtung: siehe Teil 5–8 der Anleitung.</p>
+    <div class="row">
+      <div class="col-6"><label>Sync-Secret (frei wählbares Passwort — dasselbe wie in Vercel als SYNC_SECRET)</label><input id="syncsecret" type="password" value="${serverCfg?.secret||''}" placeholder="z. B. mein-geheimes-passwort-123"></div>
+      <div class="col-6"><label>Discord-Webhook-URL (optional, für Verkaufs-Meldungen)</label><input id="discordurl" value="${db.settings.discordWebhook||''}" placeholder="https://discord.com/api/webhooks/..."></div>
+      <div class="col-12 actions">
+        ${serverCfg?.enabled
+          ? `<button class="btn-primary" onclick="runSyncNow()">Jetzt synchronisieren</button>
+             <button class="btn-ghost" onclick="saveDiscordUrl()">Discord-URL speichern</button>
+             <button class="btn-danger" onclick="deactivateServerSync()">Automatisierung deaktivieren</button>`
+          : `<button class="btn-primary" onclick="activateServerSync()">Automatisierung aktivieren (Daten zum Server hochladen)</button>`}
+      </div>
+      <div class="col-12" id="syncResult"></div>
+    </div>
+  </div>`;
+}
+async function activateServerSync(){
+  const out = document.getElementById('syncResult');
+  const proxyUrl = (db.settings.ebay?.proxyUrl||'').replace(/\/$/,'');
+  const secret = v('syncsecret').trim();
+  if(!proxyUrl){ out.innerHTML = `<div class="err-banner">Bitte zuerst oben die Server-Adresse eintragen und speichern.</div>`; return; }
+  if(!secret){ out.innerHTML = `<div class="err-banner">Bitte ein Sync-Secret eintragen — dasselbe, das du in Vercel als SYNC_SECRET hinterlegt hast.</div>`; return; }
+  db.settings.discordWebhook = v('discordurl').trim();
+  out.innerHTML = `<p class="muted">Prüfe Server…</p>`;
+  try{
+    // SCHUTZ: Erst prüfen, ob auf dem Server schon Daten liegen. Sonst würde ein neues
+    // Gerät (z. B. Handy mit leerem Speicher) die echten Server-Daten überschreiben.
+    const check = await fetch(`${proxyUrl}/api/db?secret=${encodeURIComponent(secret)}`);
+    const checkData = await check.json().catch(()=>({}));
+    if(!check.ok) throw new Error(checkData.error || ('Server antwortete mit '+check.status));
+    const existing = checkData.db;
+
+    if(existing && ((existing.products?.length||0) > 0 || (existing.sales?.length||0) > 0)){
+      const useServer = confirm(
+        `Auf dem Server liegen bereits Daten (${existing.products?.length||0} Produkte, ${existing.sales?.length||0} Verkäufe).\n\n`+
+        `OK = Server-Daten übernehmen (richtig, wenn du dich von einem neuen Gerät aus verbindest)\n`+
+        `Abbrechen = nichts tun`
+      );
+      if(!useServer){ out.innerHTML = `<div class="note-banner">Abgebrochen — nichts wurde verändert.</div>`; return; }
+      serverCfg = {enabled:true, proxyUrl, secret};
+      await localRawSet(SERVER_CFG_KEY, JSON.stringify(serverCfg));
+      out.innerHTML = `<div class="note-banner">Verbunden — Server-Daten werden geladen…</div>`;
+      loadDb();
+      return;
+    }
+
+    // Server ist leer → Erstaktivierung: lokale Daten hochladen
+    out.innerHTML = `<p class="muted">Lade deine Daten zum Server hoch…</p>`;
+    const res = await fetch(`${proxyUrl}/api/db?secret=${encodeURIComponent(secret)}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(db),
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || ('Server antwortete mit '+res.status));
+    serverCfg = {enabled:true, proxyUrl, secret};
+    await localRawSet(SERVER_CFG_KEY, JSON.stringify(serverCfg));
+    out.innerHTML = `<div class="note-banner">Automatisierung aktiviert — deine Daten liegen jetzt zentral. Richte als Nächstes cron-job.org ein (Teil 7 der Anleitung), damit der Abgleich regelmäßig von selbst läuft.</div>`;
+    loadDb();
+  }catch(e){
+    out.innerHTML = `<div class="err-banner">Aktivierung fehlgeschlagen: ${e.message}. Prüfe, ob in Vercel die Datenbank (Storage) verbunden und SYNC_SECRET gesetzt ist — danach einmal Redeploy.</div>`;
+  }
+}
+async function deactivateServerSync(){
+  if(!confirm('Automatisierung deaktivieren? Deine Daten werden vorher vom Server heruntergeladen und wieder lokal gespeichert.')) return;
+  try{
+    const raw = await storageGet(STORAGE_KEY); // holt letzten Server-Stand
+    serverCfg = {...serverCfg, enabled:false};
+    await localRawSet(SERVER_CFG_KEY, JSON.stringify(serverCfg));
+    if(raw) await localRawSet(STORAGE_KEY, raw); // Server-Stand lokal übernehmen
+    loadDb();
+  }catch(e){
+    alert('Deaktivierung fehlgeschlagen: '+e.message);
+  }
+}
+function saveDiscordUrl(){
+  mutate(()=>{ db.settings.discordWebhook = v('discordurl').trim(); });
+}
+async function runSyncNow(){
+  const out = document.getElementById('syncResult');
+  out.innerHTML = `<p class="muted">Synchronisiere mit eBay…</p>`;
+  try{
+    const res = await fetch(`${serverCfg.proxyUrl}/api/sync?secret=${encodeURIComponent(serverCfg.secret)}`);
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || ('Server antwortete mit '+res.status));
+    out.innerHTML = `<div class="note-banner">Sync fertig: ${data.geprüft} Bestellungen geprüft, ${data.neuGebucht} neu gebucht.${data.details?.length ? '<br>'+data.details.join('<br>') : ''}</div>`;
+    await loadDb(); // neue Daten vom Server holen und anzeigen
+    goTo('settings');
+  }catch(e){
+    out.innerHTML = `<div class="err-banner">Sync fehlgeschlagen: ${e.message}</div>`;
+  }
+}
+function saveEbayRefresh(){
+  mutate(()=>{ db.settings.ebay.refreshToken = v('ebrefresh').trim(); });
+}
+function saveEbay(){
+  mutate(()=>{
+    db.settings.ebay = {...db.settings.ebay, clientId: v('ebclientid'), clientSecret: v('ebclientsecret'), ruName: v('ebruname')};
+  });
+}
+function saveEbayProxy(){
+  mutate(()=>{
+    db.settings.ebay.proxyUrl = v('ebproxyurl').replace(/\/$/, '');
+  });
+}
+function startEbayAuth(){
+  const out = document.getElementById('ebResult');
+  const {clientId, ruName} = db.settings.ebay;
+  if(!clientId || !ruName){
+    out.innerHTML = `<div class="err-banner">Bitte zuerst App ID und RuName ausfüllen und speichern.</div>`;
+    return;
+  }
+  const scopes = [
+    'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+    'https://api.ebay.com/oauth/api_scope/sell.inventory',
+    'https://api.ebay.com/oauth/api_scope/sell.finances',
+  ].join(' ');
+  const authUrl = 'https://auth.ebay.com/oauth2/authorize'
+    + '?client_id=' + encodeURIComponent(clientId)
+    + '&redirect_uri=' + encodeURIComponent(ruName)
+    + '&response_type=code'
+    + '&scope=' + encodeURIComponent(scopes);
+  window.open(authUrl, '_blank');
+  out.innerHTML = `<div class="note-banner">eBay-Login wurde in einem neuen Tab geöffnet. Nach deiner Bestätigung leitet eBay dich mit einem Code an deine RuName-Adresse weiter — den brauchen wir für den nächsten Schritt (den kleinen Server, der daraus ein Zugriffstoken macht).</div>`;
+}
+function setTaxMode(kleinunternehmer){
+  mutate(()=>{ db.settings.kleinunternehmer = kleinunternehmer; });
+}
+function saveSettings(){
+  mutate(()=>{
+    db.settings.defaultFee = num(v('setfee'));
+    db.settings.fixedOrderFee = num(v('setfixfee'));
+    db.settings.packaging = num(v('setpack'));
+    db.settings.lowStockThreshold = num(v('setlow'));
+    db.settings.durchstarterEnde = v('setdurchstarter');
+  });
+}
+function resetAll(){
+  if(confirm('Wirklich ALLE Daten unwiderruflich löschen?')){
+    mutate(()=>{ db = defaultDb(); });
+  }
+}
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(db,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'reseller-center-backup-'+todayISO()+'.json';
+  a.click();
+}
+function importBackup(e){
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const parsed = JSON.parse(r.result);
+      mutate(()=>{ db = parsed; });
+      alert('Backup importiert.');
+    }catch(err){ alert('Diese Datei ist kein gültiges Backup.'); }
+  };
+  r.readAsText(f);
+}
+function exportCsv(kind){
+  let rows = [];
+  if(kind==='products'){
+    rows.push(['Name','Kategorie','Marke','Lieferant','EK','VK','Bestand','Gewicht']);
+    db.products.forEach(p=>rows.push([p.name,p.category,p.brand||'',p.supplier||'',p.ek,p.vk,p.stock,p.weight||'']));
+  } else {
+    rows.push(['Datum','Produkt','Plattform','Menge','VK','Gewinn']);
+    db.sales.forEach(s=>rows.push([new Date(s.date).toLocaleDateString('de-DE'),s.productName,s.platform,s.qty,s.vk,s.gewinn.toFixed(2)]));
+  }
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = kind+'-'+todayISO()+'.csv';
+  a.click();
+}
+
+loadDb();
+
+// App-Fähigkeit (PWA): nur registrieren, wenn als echte Webseite geladen (http/https),
+// nicht bei lokal geöffneter Datei oder in der Claude-Vorschau ohne sw.js.
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{ /* kein sw.js vorhanden — z. B. lokale Nutzung, völlig ok */ });
+}
+</script>
+</body>
+</html>
